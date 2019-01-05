@@ -1,29 +1,37 @@
 #!/usr/bin/env python3
 
-"""Given an integer k and a string s, find the length of the longest substring that contains at most k distinct characters."""
+"""
+Given an integer k and a string s, find the length of the longest substring that contains at most k distinct characters.
+
+For example, given s = "abcba" and k = 2, the longest substring with k distinct characters is "bcb".
+"""
 
 import unittest
 
 
 def len_distinct_characters(string, k):
-    results = []
+    string_array = list(string)
+    substrings = []
 
-    for original_index, original_letter in enumerate(string):
-        result = 1
-        roster = [original_letter]
-        for tested_index, tested_letter in enumerate(string):
-            if original_index == tested_index:
+    for offset in range(0, len(string_array) + 1):
+        for length in range(1, len(string_array) + 1):
+            if offset + length > len(string_array):
                 continue
+            substrings.append(string_array[offset:offset + length])
 
-            if original_letter == tested_letter:
-                result = result + 1
-            elif original_letter != tested_letter and len(roster) < k:
-                roster.append(tested_letter)
-                result = result + 1
+    valid_substrings = []
+    for substring in substrings:
+        dist_letters = []
+        for letter in substring:
+            if letter not in dist_letters:
+                if len(dist_letters) < k:
+                    dist_letters.append(letter)
+                else:
+                    break
+        else:
+            valid_substrings.append(substring)
 
-        results.append(result)
-
-    return max(results)
+    return max([len(substring) for substring in valid_substrings])
 
 
 class Test(unittest.TestCase):
